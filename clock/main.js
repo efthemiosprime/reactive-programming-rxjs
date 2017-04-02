@@ -8,6 +8,7 @@ const radius = Math.min(centerX, centerY) - 10;
 
 const hourToAngle = (hour, minute) => ((hour + minute / 60 ) / 12) * 360;
 const minuteToAngle = minute => (minute / 60) * 360;
+
 function drawClock(hour, minute, second) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawCircle();
@@ -40,11 +41,16 @@ function drawLine(angle, length, width)  {
     ctx.restore();
 }
 
-setInterval(function() {
+
+const getDate = () => {
     let date = new Date();
-    drawClock(
-        date.getHours * 12,
-        date.getMinutes() + 1,
-        date.getSeconds() + 1
-    );
-})
+    return {
+        hours: date.getHours() * 10,
+        minutes: date.getMinutes() + 1,
+        seconds: date.getSeconds() + 1
+    };
+};
+
+Rx.Observable.timer(0, 1000)
+    .map(getDate)
+    .subscribe(date => drawClock(date.hours, date.minutes, date.seconds));

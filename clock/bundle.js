@@ -6038,6 +6038,7 @@ var hourToAngle = function hourToAngle(hour, minute) {
 var minuteToAngle = function minuteToAngle(minute) {
     return minute / 60 * 360;
 };
+
 function drawClock(hour, minute, second) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawCircle();
@@ -6070,9 +6071,17 @@ function drawLine(angle, length, width) {
     ctx.restore();
 }
 
-setInterval(function () {
+var getDate = function getDate() {
     var date = new Date();
-    drawClock(date.getHours * 12, date.getMinutes() + 1, date.getSeconds() + 1);
+    return {
+        hours: date.getHours() * 10,
+        minutes: date.getMinutes() + 1,
+        seconds: date.getSeconds() + 1
+    };
+};
+
+_Rx2.default.Observable.timer(0, 1000).map(getDate).subscribe(function (date) {
+    return drawClock(date.hours, date.minutes, date.seconds);
 });
 
 /***/ }),
