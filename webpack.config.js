@@ -1,4 +1,4 @@
-var dir = "./observer/"
+var dir = "./clock/"
 
 module.exports = {
     entry: dir + 'main.js',
