@@ -1,9 +1,10 @@
+var dir = "./observer/"
 
 module.exports = {
-    entry: './template/main.js',
+    entry: dir + 'main.js',
     output: {
         path: __dirname,
-        filename: 'bundle.js',
+        filename: dir + 'bundle.js',
     },
     module: {
         loaders: [
