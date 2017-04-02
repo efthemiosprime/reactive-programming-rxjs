@@ -1,2 +1,2 @@
-# reactive-programming-rxjs
+# Reactive Programming RxJS
 RxJS learning repository
