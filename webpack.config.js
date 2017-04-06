@@ -1,4 +1,4 @@
-var dir = "./clock/"
+var dir = "./redux-clone/"
 
 module.exports = {
     entry: dir + 'main.js',
