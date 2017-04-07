@@ -6036,41 +6036,47 @@ var appState = new _Rx2.default.BehaviorSubject({ todos: [] });
 
 // - dispatch actions
 var dispatcher = function dispatcher(fn) {
-  return function () {
-    return appState.next(fn.apply(undefined, arguments));
-  };
+    return function () {
+        return appState.next(fn.apply(undefined, arguments));
+    };
 };
 var createTodo = dispatcher(function (data) {
-  return { type: "CREATE_TODO", data: data };
+    return { type: "CREATE_TODO", data: data };
 });
 var toggleTodo = dispatcher(function (data) {
-  return { type: "TOGGLE_TODO", data: data };
+    return { type: "TOGGLE_TODO", data: data };
 });
 
 // - updateView
 var li = function li(todo) {
-  return "<li>" + todo.text + "</li>";
+    return "<li>" + todo.text + "</li>";
 };
 function updateView(state) {
 
-  activeEl.innerHTML = state.todos.filter(function (todo) {
-    return !todo.done;
-  }).map(li).join(' ');
+    activeEl.innerHTML = state.todos.filter(function (todo) {
+        return !todo.done;
+    }).map(li).join(' ');
 
-  doneEl.innerHTML = state.todos.filter(function (todo) {
-    return todo.done;
-  }).map(li).join(' ');
+    doneEl.innerHTML = state.todos.filter(function (todo) {
+        return todo.done;
+    }).map(li).join(' ');
 }
 
 // - reducer
 function reducer(state, action) {
-  switch (action.type) {
-    case 'CREATE_TODO':
-      return Object.assign({}, state, { todos: state.todos.concat([{ text: action.data, done: false }])
-      });
-    default:
-      return state || {};
-  }
+    switch (action.type) {
+        case 'CREATE_TODO':
+            return Object.assign({}, state, { todos: state.todos.concat([{ text: action.data, done: false }])
+            });
+
+        case 'TOGGLE_TODO':
+            return Object.assign({}, state, { todos: state.todos.map(function (todo) {
+                    return todo.text === action.data ? Object.assign({}, todo, { done: !todo.done }) : todo;
+                })
+            });
+        default:
+            return state || {};
+    }
 }
 appState.scan(reducer).subscribe(updateView);
 createTodo('Add View');
@@ -6078,13 +6084,19 @@ createTodo("Add Image");
 
 // - DOM events
 _Rx2.default.Observable.fromEvent(inputEl, 'keyup').filter(function (e) {
-  return e.key === "Enter";
+    return e.key === "Enter";
 }).map(function (e) {
-  return e.target.value;
+    return e.target.value;
 }).subscribe(function (text) {
-  createTodo(text);
-  inputEl.value = '';
+    createTodo(text);
+    inputEl.value = '';
 });
+
+_Rx2.default.Observable.fromEvent(activeEl, 'click').merge(_Rx2.default.Observable.fromEvent(doneEl, 'click')).filter(function (e) {
+    return e.target.matches('li');
+}).map(function (e) {
+    return e.target.innerText.trim();
+}).subscribe(toggleTodo);
 
 /***/ }),
 /* 70 */

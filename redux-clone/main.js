@@ -35,7 +35,14 @@ function reducer(state, action) {
                 state,
                 {todos: state.todos.concat([{text: action.data, done: false}])
             })
-         default:
+
+        case 'TOGGLE_TODO':
+            return Object.assign({}, 
+                state,
+                {todos: state.todos.map(todo => todo.text === action.data ? 
+                    Object.assign({}, todo, {done: !todo.done}) : todo)
+            })
+        default:
             return state || {};
      }
 }
@@ -52,3 +59,9 @@ Rx.Observable.fromEvent(inputEl, 'keyup')
         createTodo(text);
         inputEl.value = '';
     })
+
+Rx.Observable.fromEvent(activeEl, 'click')
+    .merge(Rx.Observable.fromEvent(doneEl, 'click'))
+    .filter(e => e.target.matches('li'))
+    .map(e => e.target.innerText.trim())
+    .subscribe(toggleTodo);
